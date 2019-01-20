@@ -28,6 +28,7 @@ public class ProfileServer {
 			server = new ServerSocket(6666);
 			executor = Executors.newCachedThreadPool();
 			new Thread(new UpdaterCreator(updaterQueue)).start();
+			new Thread(new UpdaterCreator(updaterQueue)).start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

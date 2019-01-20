@@ -11,6 +11,7 @@ import redis.clients.jedis.Jedis;
 public class UpdaterCreator implements Runnable {
 
 	Queue queue;
+	private static int maxQueueSize = 25;
 	
 	public UpdaterCreator(Queue aQueue) {
 		queue = aQueue;
@@ -20,33 +21,21 @@ public class UpdaterCreator implements Runnable {
 	public void run() {
 		while(true)
 		{
-			for(int i = queue.size();i<50;i++)
+			for(int i = queue.size();i<maxQueueSize;i++)
 			{
 				queue.add(createUpdater());
 			}	
 		}
 	}
 	
-	private int queueSize()
-	{
-		Iterator it = queue.iterator();
-		int size = 0;
-		while(it.hasNext())
-		{
-			it.next();
-			size++;
-		}
-		return size;
-	}
-	
 	private UserProfileUpdater createUpdater()
 	{
         Cluster cluster = null;
         cluster = Cluster.builder()                                                   
-		        .addContactPoint("127.0.0.1")
+		        .addContactPoint("192.168.99.100")
 		        .build();
 		Session session = cluster.connect();
-		Jedis jedis = new Jedis();
+		Jedis jedis = new Jedis("192.168.99.100");
 		UserProfileUpdater updater = new UserProfileUpdater(session, jedis);
 		return updater;
 	}
